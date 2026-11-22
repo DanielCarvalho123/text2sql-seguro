@@ -1,0 +1,21 @@
+id,pergunta,status,pediu_esclarecimento,mensagem,sql_gerado
+a01,Qual é o melhor cliente?,ambigua,True,Qual é o melhor cliente?,
+a02,Quais produtos vendem bem?,ambigua,True,Você precisa fornecer o esquema do banco de dados para corrigir a consulta.,"SELECT p.nome, SUM(od.quantidade) AS vendas
+FROM produtos p
+JOIN ordens_detalhes od ON p.id = od.produto_id
+GROUP BY p.id
+ORDER BY vendas DESC;"
+a03,Mostre as vendas recentes.,ambigua,True,Qual tabela contém as vendas?,SELECT * FROM vendas ORDER BY data_venda DESC LIMIT 10;
+a04,Qual é a região mais forte?,ambigua,True,Qual região você gostaria de saber?,SELECT region FROM products GROUP BY region ORDER BY COUNT(*) DESC LIMIT 1;
+a05,Quanto a loja ganhou?,ambigua,True,Qual é o nome da tabela que contém as vendas?,"SELECT SUM(preco * quantidade) AS total_ganho
+FROM vendas;"
+a06,Quais clientes são importantes?,ambigua,True,Qual é o critério para considerar um cliente importante?,
+a07,Qual é o produto mais popular?,ambigua,True,Qual é o produto mais popular?,SELECT produto FROM vendas GROUP BY produto ORDER BY COUNT(*) DESC LIMIT 1;
+a08,Quais são os pedidos grandes?,ambigua,True,Qual é o critério para considerar um pedido grande?,
+a09,Qual estado compra mais?,ambigua,True,Qual estado compra mais?,SELECT estado FROM compras GROUP BY estado ORDER BY COUNT(*) DESC LIMIT 1;
+a10,Os clientes antigos compram mais?,ambigua,True,"Qual é o critério para considerar um cliente ""antigo""?","SELECT c.nome, COUNT(o.id) AS compras
+FROM cliente c
+JOIN pedido o ON c.id = o.cliente_id
+WHERE o.data_compra < '2020-01-01'
+GROUP BY c.id
+ORDER BY compras DESC;"

@@ -1,0 +1,50 @@
+id,pergunta,sql,explicacao,origem,nota_avaliador_1,nota_avaliador_2,comentario
+q43,Quantos clientes fizeram pedidos tanto em 2024 quanto em 2025?,"SELECT COUNT(DISTINCT cliente_id) AS clientes_2024_2025
+FROM pedidos
+WHERE strftime('%Y', data_pedido) IN ('2024', '2025');",A consulta SQL contabiliza quantos clientes fizeram pedidos em 2024 e 2025. Ela usa a função `strftime` para extrair o ano da data de pedido e a função `IN` para filtrar os pedidos de 2024 e 2025. O resultado é organizado por contagem de clientes únicos.,modelo,,,
+q08,Quantos produtos há em cada categoria?,"SELECT categoria, COUNT(*) AS quantidade FROM produtos GROUP BY categoria","A consulta SQL contabiliza a quantidade de produtos em cada categoria. Ela seleciona a coluna 'categoria' e conta o número de registros para cada categoria usando a função COUNT(*). O resultado é agrupado por 'categoria' usando a cláusula GROUP BY, para que o resultado seja organizado por categoria.",modelo,,,
+q02,Quantos produtos existem no catálogo?,SELECT COUNT(*) FROM produtos;,"A consulta SQL `SELECT COUNT(*) FROM produtos` conta o número total de produtos no catálogo. Nenhuma filtragem foi aplicada, e o resultado foi organizado simplesmente contando todos os registros na tabela `produtos`.",modelo,,,
+q18,"Quantas unidades foram vendidas no total, somando todos os pedidos, inclusive os cancelados?","SELECT SUM(itens_pedido.quantidade) AS total_unidades_vendidas
+FROM itens_pedido;","A consulta SQL foi usada para somar todas as quantidades de itens vendidos em todos os pedidos, incluindo os cancelados. Os dados usados foram as informações sobre os itens vendidos no banco de dados. A organização do resultado foi simples, com apenas uma coluna chamada ""total_unidades_vendidas"" que contém o total de unidades vendidas.",modelo,,,
+q16,"Quais são as categorias de produtos, sem repetição?",SELECT DISTINCT categoria FROM produtos,"A consulta SQL selecionou as categorias de produtos, sem repetição, usando o comando DISTINCT.",modelo,,,
+q15,Quantos pedidos estão com status enviado?,SELECT COUNT(*) FROM pedidos WHERE status = 'enviado';,A consulta contabilizou os pedidos que estão com o status 'enviado'.,modelo,,,
+q09,Qual é o preço médio dos produtos da categoria Livros?,SELECT AVG(preco) AS media_preco FROM produtos WHERE categoria = 'Livros';,"A consulta SQL calcula o preço médio dos produtos da categoria Livros. Ela usa a função AVG para calcular a média dos preços dos produtos que estão na categoria Livros. No resultado, a média é exibida como ""media_preco"".",modelo,,,
+q07,Quantos clientes são do estado de São Paulo?,SELECT COUNT(*) FROM clientes WHERE uf = 'SP';,"A consulta contabilizou os clientes que residem no estado de São Paulo. A condição `WHERE uf = 'SP'` foi aplicada para filtrar os registros que correspondem a clientes do estado de São Paulo. O resultado foi organizado por contagem total, que é o número de clientes encontrados.",modelo,,,
+q37,Qual foi a receita dos pedidos com status entregue feitos em dezembro de 2025?,"SELECT SUM(itens_pedido.quantidade * itens_pedido.preco_unitario) AS receita
+FROM pedidos
+JOIN itens_pedido ON pedidos.id = itens_pedido.pedido_id
+JOIN produtos ON itens_pedido.produto_id = produtos.id
+WHERE pedidos.status = 'entregue' AND strftime('%Y-%m', pedidos.data_pedido) = '2025-12'
+AND pedidos.status != 'cancelado';","A consulta SQL foi usada para calcular a receita dos pedidos com status 'entregue' feitos em dezembro de 2025. Ela selecionou a soma do produto de quantidade e preço unitário de todos os itens dos pedidos que atendem aos filtros. Os filtros aplicados foram o status do pedido ser 'entregue', a data do pedido ser dezembro de 2025 e o status do pedido não ser 'cancelado'. O resultado foi organizado por soma da receita.",modelo,,,
+q06,Qual é o nome do produto mais caro?,SELECT nome FROM produtos ORDER BY preco DESC LIMIT 1,"A consulta selecionou o nome do produto mais caro. Ela ordenou os produtos por preço em ordem decrescente e limitou o resultado a apenas o primeiro item, que é o mais caro.",modelo,,,
+q29,"Quantos pedidos foram feitos por clientes da região Nordeste, contando todos os status?","SELECT COUNT(*) AS total_pedidos
+FROM clientes
+JOIN pedidos ON clientes.id = pedidos.cliente_id
+WHERE clientes.uf IN (
+    SELECT sigla
+    FROM estados
+    WHERE regiao = 'Nordeste'
+);","A consulta conta quantos pedidos foram feitos por clientes da região Nordeste. Ela usa a tabela clientes para identificar os clientes e a tabela pedidos para associar os pedidos aos clientes. O filtro é aplicado na tabela estados para selecionar as regiões Nordeste e, em seguida, na tabela clientes para filtrar os clientes que estão na região selecionada. O resultado é organizado por contagem de pedidos.",modelo,,,
+q03,Quantos pedidos foram cancelados?,SELECT COUNT(*) FROM pedidos WHERE status = 'cancelado';,A consulta contabilizou os pedidos que tinham o status 'cancelado'.,modelo,,,
+q45,Qual foi o crescimento percentual do faturamento de 2025 em relação a 2024?,"SELECT 
+    (SUM(CASE WHEN strftime('%Y', data_pedido) = '2025' THEN quantidade * preco_unitario ELSE 0 END) - 
+     SUM(CASE WHEN strftime('%Y', data_pedido) = '2024' THEN quantidade * preco_unitario ELSE 0 END)) * 100 / 
+    SUM(CASE WHEN strftime('%Y', data_pedido) = '2024' THEN quantidade * preco_unitario ELSE 0 END) AS crescimento_percentual
+FROM 
+    itens_pedido
+JOIN 
+    pedidos ON itens_pedido.pedido_id = pedidos.id
+WHERE 
+    strftime('%Y', data_pedido) IN ('2024', '2025') AND pedidos.status != 'cancelado';","A consulta calcula o crescimento percentual do faturamento de 2025 em relação a 2024. Ela usa a função SUM para somar o valor total dos itens vendidos em cada ano, filtrando por data de pedido e status do pedido. O resultado é organizado em uma coluna chamada crescimento_percentual, que mostra a diferença percentual entre os valores de 2025 e 2024.",modelo,,,
+q38,Qual é o produto mais caro de cada categoria?,"SELECT p.nome, p.categoria, MAX(p.preco) AS preco_maximo
+FROM produtos p
+GROUP BY p.categoria;","A consulta SQL seleciona o nome, categoria e o preço máximo de cada produto. Ela agrupa os resultados por categoria e usa a função MAX() para encontrar o preço mais alto de cada categoria.",modelo,,,
+q40,Qual região teve o maior faturamento em 2025?,"SELECT e.regiao, SUM(i.quantidade * i.preco_unitario) AS faturamento
+FROM estados e
+JOIN clientes c ON e.sigla = c.uf
+JOIN pedidos p ON c.id = p.cliente_id
+JOIN itens_pedido i ON p.id = i.pedido_id
+WHERE strftime('%Y', p.data_pedido) = '2025'
+GROUP BY e.regiao
+ORDER BY faturamento DESC
+LIMIT 1;","A consulta SQL foi usada para encontrar a região com o maior faturamento em 2025. Ela selecionou os dados dos estados, clientes, pedidos e itens de pedido, aplicou filtros para o ano de 2025 e agrupou os resultados por região. O resultado foi organizado em ordem decrescente de faturamento e limitado a apenas a região com o maior faturamento.",modelo,,,

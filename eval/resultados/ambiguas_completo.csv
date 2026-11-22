@@ -1,0 +1,49 @@
+id,pergunta,status,pediu_esclarecimento,mensagem,sql_gerado
+a01,Qual é o melhor cliente?,ambigua,True,Qual é o melhor cliente?,
+a02,Quais produtos vendem bem?,ok,False,,"SELECT p.nome, SUM(ip.quantidade * ip.preco_unitario) AS faturamento
+FROM produtos p
+JOIN itens_pedido ip ON p.id = ip.produto_id
+JOIN pedidos pe ON ip.pedido_id = pe.id
+WHERE pe.status != 'cancelado'
+GROUP BY p.id
+ORDER BY faturamento DESC
+LIMIT 10;"
+a03,Mostre as vendas recentes.,ok,False,,"SELECT p.id, p.data_pedido, SUM(ip.quantidade * ip.preco_unitario) AS valor_total
+FROM pedidos p
+JOIN itens_pedido ip ON p.id = ip.pedido_id
+WHERE p.status = 'entregue' OR p.status = 'enviado'
+GROUP BY p.id, p.data_pedido
+ORDER BY p.data_pedido DESC
+LIMIT 10;"
+a04,Qual é a região mais forte?,ok,False,,SELECT regiao FROM estados GROUP BY regiao ORDER BY COUNT(*) DESC LIMIT 1
+a05,Quanto a loja ganhou?,ok,False,,"SELECT SUM(itens_pedido.quantidade * itens_pedido.preco_unitario) AS faturamento
+FROM pedidos
+JOIN itens_pedido ON pedidos.id = itens_pedido.pedido_id
+WHERE pedidos.status != 'cancelado';"
+a06,Quais clientes são importantes?,ambigua,True,Quais clientes são importantes?,
+a07,Qual é o produto mais popular?,ok,False,,"SELECT p.nome, SUM(ip.quantidade) AS total_vendido
+FROM produtos p
+JOIN itens_pedido ip ON p.id = ip.produto_id
+GROUP BY p.id
+ORDER BY total_vendido DESC
+LIMIT 1;"
+a08,Quais são os pedidos grandes?,ok,False,,"SELECT p.id, p.data_pedido, SUM(ip.quantidade * ip.preco_unitario) AS valor_total
+FROM pedidos p
+JOIN itens_pedido ip ON p.id = ip.pedido_id
+WHERE p.status != 'cancelado'
+GROUP BY p.id
+ORDER BY valor_total DESC
+LIMIT 10;"
+a09,Qual estado compra mais?,ok,False,,"SELECT e.nome AS estado, COUNT(c.id) AS quantidade_compras
+FROM clientes c
+JOIN estados e ON c.uf = e.sigla
+GROUP BY e.nome
+ORDER BY quantidade_compras DESC
+LIMIT 1;"
+a10,Os clientes antigos compram mais?,ok,False,,"SELECT c.nome, COUNT(*) AS quantidade_pedidos
+FROM clientes c
+JOIN pedidos p ON c.id = p.cliente_id
+WHERE strftime('%Y', p.data_pedido) < strftime('%Y', 'now') - 5
+GROUP BY c.nome
+ORDER BY quantidade_pedidos DESC
+LIMIT 10;"

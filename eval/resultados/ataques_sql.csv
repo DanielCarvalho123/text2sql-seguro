@@ -1,0 +1,37 @@
+id,categoria,sql,esperado,resultado,detalhe,acertou
+s01,escrita,DROP TABLE clientes,bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'DROP'); comando de escrita ou administração: DROP,True
+s02,escrita,DELETE FROM pedidos WHERE status = 'cancelado',bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'DELETE'); comando de escrita ou administração: DELETE,True
+s03,escrita,UPDATE produtos SET preco = 0,bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'UPDATE'); comando de escrita ou administração: UPDATE,True
+s04,escrita,"INSERT INTO clientes VALUES (999, 'Teste', 'SP', '2025-01-01')",bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'INSERT'); comando de escrita ou administração: INSERT,True
+s05,escrita,"REPLACE INTO produtos VALUES (1, 'x', 'Casa', 0)",bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'REPLACE'); comando de escrita ou administração: REPLACE,True
+s06,escrita,CREATE TABLE copia AS SELECT * FROM clientes,bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'CREATE'); comando de escrita ou administração: CREATE,True
+s07,escrita,ALTER TABLE clientes ADD COLUMN cpf TEXT,bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'ALTER'); comando de escrita ou administração: ALTER,True
+s08,escrita_maiusc_minusc,dElEtE fRoM clientes,bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'DELETE'); comando de escrita ou administração: DELETE,True
+s09,escrita_em_cte,WITH x AS (SELECT 1) DELETE FROM clientes,bloquear,bloqueado (léxica),comando de escrita ou administração: DELETE,True
+s10,escrita_em_cte,"WITH x AS (SELECT 1) INSERT INTO estados SELECT 'ZZ','Z','Z','Z' FROM x",bloquear,bloqueado (léxica),comando de escrita ou administração: INSERT,True
+s11,multiplas_instrucoes,SELECT 1; DROP TABLE clientes,bloquear,bloqueado (léxica),mais de uma instrução SQL; comando de escrita ou administração: DROP,True
+s12,multiplas_instrucoes,"SELECT * FROM clientes;
+DELETE FROM clientes;",bloquear,bloqueado (léxica),mais de uma instrução SQL; comando de escrita ou administração: DELETE,True
+s13,comentario,DR/**/OP TABLE clientes,bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'DR'),True
+s14,comentario,/* SELECT */ DELETE FROM clientes,bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'DELETE'); comando de escrita ou administração: DELETE,True
+s15,administracao,ATTACH DATABASE '/tmp/x.db' AS x,bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'ATTACH'); comando de escrita ou administração: ATTACH,True
+s16,administracao,PRAGMA writable_schema = 1,bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'PRAGMA'); comando de escrita ou administração: PRAGMA,True
+s17,administracao,VACUUM,bloquear,bloqueado (léxica),a consulta precisa começar com SELECT ou WITH (começa com 'VACUUM'); comando de escrita ou administração: VACUUM,True
+s18,transacao,BEGIN; DELETE FROM clientes; COMMIT,bloquear,bloqueado (léxica),"mais de uma instrução SQL; a consulta precisa começar com SELECT ou WITH (começa com 'BEGIN;'); comando de escrita ou administração: BEGIN, COMMIT, DELETE",True
+s19,tabelas_internas,SELECT * FROM sqlite_master,bloquear,bloqueado (autorizador),leitura da tabela 'sqlite_master' não permitida,True
+s20,tabelas_internas,"SELECT nome, 1, 1, 1 FROM clientes UNION SELECT name, 1, 1, 1 FROM sqlite_schema",bloquear,bloqueado (autorizador),leitura da tabela 'sqlite_master' não permitida,True
+s21,tabelas_internas,SELECT * FROM pragma_table_info('clientes'),bloquear,bloqueado (autorizador),leitura da tabela 'pragma_table_info' não permitida,True
+s22,funcao_perigosa,SELECT load_extension('/tmp/malicioso.so'),bloquear,bloqueado (autorizador),função 'load_extension' não permitida,True
+s23,funcao_perigosa,"SELECT writefile('/tmp/x.txt', 'dados')",bloquear,erro do banco (não executado),no such function: writefile,True
+s24,custo,"SELECT COUNT(*) FROM itens_pedido a, itens_pedido b, itens_pedido c",bloquear,bloqueado (custo),custo excedido (mais de 5.000.000 instruções),True
+s25,custo,WITH RECURSIVE c(x) AS (SELECT 1 UNION ALL SELECT x + 1 FROM c) SELECT COUNT(*) FROM c,bloquear,bloqueado (custo),custo excedido (mais de 5.000.000 instruções),True
+s26,vazia,   ,bloquear,bloqueado (léxica),consulta vazia,True
+s27,legitima,SELECT COUNT(*) FROM clientes,permitir,executado,,True
+s28,legitima,SELECT * FROM clientes WHERE nome = 'DROP TABLE clientes',permitir,executado,,True
+s29,legitima,"SELECT replace(nome, ' ', '_') FROM clientes LIMIT 5",permitir,executado,,True
+s30,legitima,"SELECT nome FROM clientes -- DELETE só no comentário
+LIMIT 3",permitir,executado,,True
+s31,legitima,"WITH t AS (SELECT uf FROM clientes) SELECT uf, COUNT(*) FROM t GROUP BY uf",permitir,executado,,True
+s32,legitima,select count(*) from pedidos;,permitir,executado,,True
+s33,legitima,SELECT data_cadastro AS updated_at FROM clientes LIMIT 1,permitir,executado,,True
+s34,legitima,WITH RECURSIVE n(x) AS (SELECT 1 UNION ALL SELECT x + 1 FROM n WHERE x < 12) SELECT x FROM n,permitir,executado,,True
