@@ -3,10 +3,9 @@
 Regra da disciplina: pelo menos 10 interações relevantes, cada uma com o prompt, um resumo da
 resposta e o que foi **aceito**, **corrigido** ou **descartado**, com o motivo.
 
-As interações 1 a 6 aconteceram de fato na conversa com o Claude que gerou a primeira versão do
-projeto. **O grupo deve completar as colunas de decisão depois de revisar cada parte** e acrescentar
-as próximas interações (revisões, correções, dúvidas) conforme o trabalho avança. Não registrem
-interações que não aconteceram.
+As interações 1 a 6 aconteceram na conversa com o Claude que gerou a primeira versão do projeto. As
+interações 7 a 15 aconteceram na conversa usada para organizar os pull requests, testar o sistema,
+rodar a avaliação e montar as evidências. Em todas, a decisão registrada é a do grupo.
 
 ---
 
@@ -18,14 +17,18 @@ interações que não aconteceram.
 - **Resposta (resumo):** recomendou o Tema 9 (text-to-SQL seguro) por não precisar de GPU, ter
   avaliação objetiva (acurácia por execução) e baseline simples (modelo sem esquema). Alertou que o
   tema é atribuído pelo professor e que o prazo era curto.
-- **Decisão:** aceito. Motivo: _(completar)_
+- **Decisão:** aceito. Motivo: o Tema 9 foi a primeira opção indicada pelo grupo e o professor o
+  atribuiu. Pesou também a avaliação objetiva (acurácia por execução), que permite comparar com um
+  baseline sem depender de opinião.
 
 ## 2. Geração do projeto completo
 
 - **Ferramenta:** Claude
 - **Prompt (resumo):** pedimos o projeto completo, dividido depois em commits entre os integrantes.
 - **Resposta (resumo):** gerou o código em `src/`, testes, Docker, CI, avaliação e documentação.
-- **Decisão:** _(aceito / corrigido — descrever o que o grupo revisou e mudou)_
+- **Decisão:** aceito, com revisão do grupo via pull request. O código foi dividido em 9 PRs, cada um
+  revisado e aprovado por outro integrante, e só entrou na `main` com o CI verde. As correções feitas
+  durante o desenvolvimento estão nas interações 4, 5, 6 e 9.
 
 ## 3. Troca de DuckDB por SQLite
 
@@ -34,7 +37,10 @@ interações que não aconteceram.
 - **Resposta (resumo):** a IA usou SQLite (biblioteca padrão do Python) porque o autorizador do
   SQLite permite bloquear operações dentro do próprio motor, e a conexão `mode=ro` impede escrita.
   Ver [ADR-001](docs/decisoes/ADR-001-sqlite.md).
-- **Decisão:** _(completar)_
+- **Decisão:** aceito. Motivo: o SQLite tem o autorizador, que bloqueia operações dentro do próprio
+  motor, e abre em modo somente leitura (`mode=ro`). Isso deixa a defesa em camadas mais forte do que só
+  analisar o texto da consulta. O SQLGlot ficou como trabalho futuro, porque o bloqueio feito pelo motor é
+  mais difícil de contornar do que a análise do texto. Ver ADR-001.
 
 ## 4. Erro da IA: CTEs bloqueadas pelo autorizador
 
@@ -160,7 +166,8 @@ interações que não aconteceram.
   casos de falha, índice de evidências, decisões das interações 1 a 6, notas humanas das explicações,
   vídeo, pesquisa ABNT e tag `v1.0`. Rodou a avaliação e preencheu as evidências **só com números
   gerados pelo sistema**.
-- **Decisão:** _(o grupo completa depois de revisar o PR das evidências)_
+- **Decisão:** aceito, pendências executadas. O grupo revisou e mergeou o PR das evidências (#11),
+  tirou os prints e decidiu, na interação 15, como tratar a avaliação das explicações.
 
 ## 15. Avaliação da amostra de explicações
 
@@ -174,4 +181,18 @@ interações que não aconteceram.
   proibidas pela instrução (SELECT, JOIN, GROUP BY, WHERE). Arquivo: `eval/resultados/explicacoes_avaliadas_ia.csv`.
 - **Decisão:** aceito, com a ressalva registrada na pesquisa (seções 4.4 e 5.1) de que a avaliação não
   é humana. As colunas de nota humana continuam vazias no CSV original.
+
+## 16. Rascunho do trabalho de pesquisa ABNT
+
+- **Ferramenta:** Claude
+- **Prompt (resumo):** pedimos um rascunho da pesquisa em padrão ABNT com os resultados da avaliação.
+- **Resposta (resumo):** a IA conferiu na web 14 referências (artigos do EMNLP, NeurIPS, VLDB, ICSE e
+  AISec, a LGPD, a OWASP e a documentação do SQLite e do Python) e escreveu os capítulos 1 a 5 usando só
+  números gerados pelo sistema. Gerou o documento no Word, com formatação ABNT, e o PDF. Quando não
+  conseguiu confirmar a lista completa de autores de dois artigos, usou "et al." em vez de arriscar.
+- **Correções do grupo:** informamos os nomes completos, os RAs, o curso, o professor, a instituição e
+  a cidade. Decidimos não fazer as notas humanas das explicações, e a avaliação passou a ser feita por
+  IA, com a limitação registrada (interação 15).
+- **Decisão:** aceito como base do texto final. A IA é permitida pelo enunciado para revisar e organizar
+  o texto, e cada referência deve ser conferida pelo grupo na fonte original antes da defesa.
 

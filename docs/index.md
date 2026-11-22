@@ -10,4 +10,4 @@
 8. [Segurança, privacidade e limitações](08-seguranca-e-limitacoes.md)
 9. [Manual do usuário](09-manual-do-usuario.md)
 
-O trabalho de pesquisa em padrão ABNT fica em `docs/pesquisa-abnt.pdf`.
+O trabalho de pesquisa em padrão ABNT está em [`pesquisa-abnt.pdf`](pesquisa-abnt.pdf).
