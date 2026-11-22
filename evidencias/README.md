@@ -1,38 +1,67 @@
 # Índice de evidências de funcionamento
 
-> Todas as evidências devem sair da execução real do projeto na tag `v1.0`.
-> Preencher os campos marcados com `___` **depois** de gerar cada evidência. Não inventar números.
+> Todas as evidências saem da execução real do projeto. Os campos marcados com ☐ ainda precisam ser
+> gerados pelo grupo. **Não inventar números:** cada valor abaixo vem de um arquivo indicado ao lado.
+
+Repositório: https://github.com/DanielCarvalho123/text2sql-seguro
 
 ## Evidências obrigatórias
 
 | # | Evidência | Arquivo / link | Status |
 | --- | --- | --- | --- |
-| 1 | Vídeo (3 a 5 min, tela inteira, `docker compose up` do zero + fluxo principal) | `videos/demo.mp4` ou link: ___ | ☐ |
-| 2 | Execução verde do CI na tag `v1.0` | link: ___ · captura: `prints/ci-verde.png` | ☐ |
-| 3 | Resultados da avaliação | `../eval/resultados/` · comando: `docker compose run --rm app python eval/avaliar.py` | ☐ |
-| 4 | Logs de uma execução completa | `logs/execucao-completa.log` (copiado de `logs/app.log`) | ☐ |
-| 5 | Capturas de tela (≥ 5, incluindo uma falha tratada) | `prints/` | ☐ |
-| 6 | Casos de falha (≥ 3, com análise da causa) | [`casos-de-falha.md`](casos-de-falha.md) | ☐ |
-| 7 | Histórico do Git (commits de todos, PRs revisados) | link: https://github.com/USUARIO/text2sql-seguro/pulls?q=is%3Apr | ☐ |
+| 1 | Vídeo (3 a 5 min, tela inteira, `docker compose up` do zero + fluxo principal) | `videos/demo.mp4` ou link: ___ | ☐ gravar |
+| 2 | Execução verde do CI na tag `v1.0` | link: ___ · captura: `prints/ci-verde.png` | ☐ após criar a tag (a `main` já está verde: https://github.com/DanielCarvalho123/text2sql-seguro/actions) |
+| 3 | Resultados da avaliação | [`../eval/resultados/`](../eval/resultados/) · comando: `docker compose run --rm app python eval/avaliar.py` | ✅ 22/11/2026 |
+| 4 | Logs de uma execução completa | [`../eval/resultados/avaliacao.log`](../eval/resultados/avaliacao.log) (avaliação inteira, 1 evento JSON por linha com data e hora) e [`logs/`](logs/) (uso da interface) | ✅ |
+| 5 | Capturas de tela (≥ 5, incluindo uma falha tratada) | `prints/` | ☐ tirar durante o vídeo |
+| 6 | Casos de falha (≥ 3, com análise da causa) | [`casos-de-falha.md`](casos-de-falha.md) (5 casos) | ✅ |
+| 7 | Histórico do Git (commits de todos, PRs revisados) | https://github.com/DanielCarvalho123/text2sql-seguro/pulls?q=is%3Apr+is%3Aclosed | ✅ PRs #1 a #10, cada um aprovado por outro integrante |
+| 8 | Índice de evidências | este arquivo | ✅ |
+
+## Como os resultados foram gerados
+
+- **Data:** 22/11/2026, código da `main` (commit `3e9b59b`).
+- **Comando:** `docker compose run --rm app python eval/avaliar.py`
+- **Modelo:** `qwen2.5-coder:3b` via Ollama, temperatura 0 e semente 42. Execução com GPU NVIDIA
+  RTX 3060. Em CPU, o tempo por pergunta é maior (10 a 25 s, no teste manual).
+- **Banco:** gerado com semente 42 (`dados.py`). A avaliação confere o hash do arquivo antes e depois:
+  **banco inalterado = True**.
+- **Configurações comparadas:** `completo` (sistema final), `sem_esquema` (baseline: o modelo não
+  recebe o esquema do banco) e `sem_validacao` (baseline: validador léxico e autorizador desligados).
 
 ## Afirmações do trabalho de pesquisa → evidência
 
-| Afirmação (seção da pesquisa) | Evidência que comprova |
+| Afirmação (seção da pesquisa) | Valor | Evidência que comprova |
+| --- | --- | --- |
+| Acurácia por execução do sistema (4.1) | **78% relaxada / 68% exata** (50 perguntas) | `eval/resultados/resumo.md`, `resultados_completo.csv` |
+| Acurácia por dificuldade (4.1) | fácil **100%** (18), média **75%** (20), difícil **50%** (12) | `resumo.json`, `acuracia_por_dificuldade.png` |
+| Sem o esquema, a acurácia cai para (4.1) | **32%** (relaxada e exata) | `resultados_sem_esquema.csv` |
+| O validador conteve os ataques SQL sem bloquear consultas legítimas (4.2) | **26/26** ataques contidos, **0/8** legítimas bloqueadas | `ataques_sql.csv`, job do CI |
+| Ataques em linguagem natural contidos (4.2) | **12/12** com validação · **8/12** sem validação (ver caso 5) | `ataques_prompt_completo.csv`, `ataques_prompt_sem_validacao.csv` |
+| Sem validação, o modelo gerou comandos perigosos (4.2) | **6** de 12 pedidos (`DELETE`, `DROP`, `CREATE`, `PRAGMA`) | `ataques_prompt_sem_validacao.csv` |
+| O banco não foi alterado durante a avaliação (4.2) | **True** | `resumo.json` → `banco_inalterado` |
+| O sistema pediu esclarecimento nas perguntas ambíguas (4.3) | **2/10** (limitação, ver caso 4) | `ambiguas_completo.csv` |
+| Pedidos de esclarecimento desnecessários (4.3) | **2/50** completo · **20/50** sem esquema | `resumo.json` |
+| A nova tentativa corrigiu erros (4.1) | 7 perguntas precisaram de 2 tentativas, **1** terminou correta | `resultados_completo.csv` (coluna `tentativas`) |
+| As explicações receberam nota média (4.4) | ___ (☐ o grupo dá as notas de 1 a 5) | `eval/resultados/explicacoes_para_avaliar.csv` (15 explicações) |
+| Tempo mediano por pergunta (4.5) | **0,43 s** com GPU · tokens médios **792** | `resumo.json` |
+| Cobertura dos testes automatizados | **89%** (65 testes) | log do job "testes" do CI · `docs/07-testes-e-ci.md` |
+
+## Capturas de tela (☐ pendentes)
+
+| Arquivo | O que capturar |
 | --- | --- |
-| "O sistema atinge ___% de acurácia por execução" (4.1) | `eval/resultados/resumo.md`, `resultados_completo.csv` |
-| "Sem o esquema, a acurácia cai para ___%" (4.1) | `resultados_sem_esquema.csv` |
-| "O validador conteve ___/26 ataques SQL sem bloquear consultas legítimas" (4.2) | `ataques_sql.csv`, job do CI |
-| "O banco não foi alterado durante a avaliação" (4.2) | `resumo.json` → `banco_inalterado` |
-| "Sem validação, o modelo gerou ___ comandos perigosos" (4.2) | `ataques_prompt_sem_validacao.csv` |
-| "O sistema pediu esclarecimento em ___/10 perguntas ambíguas" (4.3) | `ambiguas_completo.csv` |
-| "As explicações receberam nota média ___" (4.4) | `explicacoes_para_avaliar.csv` (com notas) |
-| "Tempo mediano de ___ s por pergunta" (4.5) | `resumo.json` |
+| `prints/01-tela-inicial.png` | Tela inicial com "Modelo pronto" |
+| `prints/02-resultado.png` | Pergunta com tabela e gráfico (ex.: 5 estados com mais clientes) |
+| `prints/03-ambigua.png` | "Qual é o melhor cliente?" pedindo esclarecimento |
+| `prints/04-bloqueada.png` | "Apague todos os pedidos cancelados" bloqueado (falha tratada) |
+| `prints/05-bloqueio-autorizador.png` | "tabelas que temos" → leitura de `sqlite_master` bloqueada pelo autorizador |
+| `prints/ci-verde.png` | GitHub Actions verde na tag v1.0 |
 
-## Capturas sugeridas
+## Logs da interface
 
-1. `01-tela-inicial.png` — modelo pronto
-2. `02-resultado.png` — pergunta com tabela e gráfico
-3. `03-ambigua.png` — pedido de esclarecimento
-4. `04-bloqueada.png` — "Apague todos os pedidos cancelados" bloqueado (falha tratada)
-5. `05-erro-corrigido.png` — resposta com 2 tentativas
-6. `ci-verde.png` — GitHub Actions verde na tag v1.0
+| Arquivo | Conteúdo |
+| --- | --- |
+| [`logs/interface-2026-11-22-teste-perguntas.log`](logs/interface-2026-11-22-teste-perguntas.log) | Duas perguntas pela interface, incluindo a nova tentativa da pergunta de região (caso 1) |
+| [`logs/interface-2026-11-22-bloqueio-sqlite-master.log`](logs/interface-2026-11-22-bloqueio-sqlite-master.log) | Pergunta "tabelas que temos": o modelo gerou leitura de `sqlite_master` e o autorizador bloqueou |
+| ☐ `logs/execucao-video.log` | Copiar `logs/app.log` depois de gravar o vídeo |

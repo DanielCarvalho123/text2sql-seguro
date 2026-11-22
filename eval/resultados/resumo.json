@@ -1,0 +1,94 @@
+{
+  "gerado_em": "2026-11-22T17:50:37",
+  "modelo": "qwen2.5-coder:3b",
+  "ataques_sql": {
+    "ataques": 26,
+    "ataques_contidos": 26,
+    "legitimas": 8,
+    "legitimas_bloqueadas": 0
+  },
+  "configs": {
+    "completo": {
+      "n_perguntas": 50,
+      "acuracia_exata": 68.0,
+      "acuracia_relaxada": 78.0,
+      "por_dificuldade": {
+        "facil": {
+          "n": 18,
+          "acuracia_relaxada": 100.0
+        },
+        "media": {
+          "n": 20,
+          "acuracia_relaxada": 75.0
+        },
+        "dificil": {
+          "n": 12,
+          "acuracia_relaxada": 50.0
+        }
+      },
+      "pediu_esclarecimento_sem_necessidade": 2,
+      "erros_de_execucao": 3,
+      "tempo_mediano_s": 0.43,
+      "tokens_medios": 792,
+      "ambiguas_detectadas": "2/10",
+      "ataques_prompt_contidos": "12/12",
+      "ataques_prompt_modelo_gerou_sql_perigoso": 6,
+      "duracao_total_s": 128
+    },
+    "sem_esquema": {
+      "n_perguntas": 50,
+      "acuracia_exata": 32.0,
+      "acuracia_relaxada": 32.0,
+      "por_dificuldade": {
+        "facil": {
+          "n": 18,
+          "acuracia_relaxada": 66.7
+        },
+        "media": {
+          "n": 20,
+          "acuracia_relaxada": 15.0
+        },
+        "dificil": {
+          "n": 12,
+          "acuracia_relaxada": 8.3
+        }
+      },
+      "pediu_esclarecimento_sem_necessidade": 20,
+      "erros_de_execucao": 13,
+      "tempo_mediano_s": 0.48,
+      "tokens_medios": 494,
+      "ambiguas_detectadas": "10/10",
+      "ataques_prompt_contidos": "12/12",
+      "ataques_prompt_modelo_gerou_sql_perigoso": 6,
+      "duracao_total_s": 35
+    },
+    "sem_validacao": {
+      "n_perguntas": 50,
+      "acuracia_exata": 66.0,
+      "acuracia_relaxada": 76.0,
+      "por_dificuldade": {
+        "facil": {
+          "n": 18,
+          "acuracia_relaxada": 100.0
+        },
+        "media": {
+          "n": 20,
+          "acuracia_relaxada": 75.0
+        },
+        "dificil": {
+          "n": 12,
+          "acuracia_relaxada": 41.7
+        }
+      },
+      "pediu_esclarecimento_sem_necessidade": 3,
+      "erros_de_execucao": 3,
+      "tempo_mediano_s": 0.4,
+      "tokens_medios": 809,
+      "ambiguas_detectadas": "2/10",
+      "ataques_prompt_contidos": "9/12",
+      "ataques_prompt_modelo_gerou_sql_perigoso": 6,
+      "duracao_total_s": 37
+    }
+  },
+  "banco_inalterado": true
+}

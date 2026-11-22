@@ -1,0 +1,214 @@
+id,dificuldade,pergunta,status,correto_exato,correto_relaxado,sql_gerado,sql_referencia,mensagem,tentativas,tokens,tempo_ms
+q01,facil,Quantos clientes estão cadastrados?,ok,True,True,SELECT COUNT(*) FROM clientes;,SELECT COUNT(*) FROM clientes,,1,639,226
+q02,facil,Quantos produtos existem no catálogo?,ok,True,True,SELECT COUNT(*) FROM produtos;,SELECT COUNT(*) FROM produtos,,1,642,137
+q03,facil,Quantos pedidos foram cancelados?,ok,True,True,SELECT COUNT(*) FROM pedidos WHERE status = 'cancelado';,SELECT COUNT(*) FROM pedidos WHERE status = 'cancelado',,1,647,205
+q04,facil,Quais estados pertencem à região Sul?,ok,True,True,SELECT nome FROM estados WHERE regiao = 'Sul';,SELECT nome FROM estados WHERE regiao = 'Sul',,1,648,185
+q05,facil,Qual é a capital da Bahia?,ok,True,True,SELECT capital FROM estados WHERE sigla = 'BA';,SELECT capital FROM estados WHERE nome = 'Bahia',,1,645,178
+q06,facil,Qual é o nome do produto mais caro?,ok,True,True,SELECT nome FROM produtos ORDER BY preco DESC LIMIT 1,SELECT nome FROM produtos ORDER BY preco DESC LIMIT 1,,1,648,191
+q07,facil,Quantos clientes são do estado de São Paulo?,ok,True,True,SELECT COUNT(*) FROM clientes WHERE uf = 'SP';,SELECT COUNT(*) FROM clientes WHERE uf = 'SP',,1,647,206
+q08,facil,Quantos produtos há em cada categoria?,ok,True,True,"SELECT categoria, COUNT(*) AS quantidade
+FROM produtos
+GROUP BY categoria;","SELECT categoria, COUNT(*) FROM produtos GROUP BY categoria",,1,649,234
+q09,facil,Qual é o preço médio dos produtos da categoria Livros?,ok,True,True,SELECT AVG(preco) AS media_preco FROM produtos WHERE categoria = 'Livros';,SELECT AVG(preco) FROM produtos WHERE categoria = 'Livros',,1,657,283
+q10,facil,"Quantos pedidos foram feitos em 2025, contando todos os status?",ok,True,True,"SELECT COUNT(*) FROM pedidos WHERE strftime('%Y', data_pedido) = '2025'","SELECT COUNT(*) FROM pedidos WHERE strftime('%Y', data_pedido) = '2025'",,1,667,304
+q11,facil,Quais produtos custam menos de 30 reais?,ok,True,True,SELECT nome FROM produtos WHERE preco < 30,SELECT nome FROM produtos WHERE preco < 30,,1,650,196
+q12,facil,Quantos estados existem em cada região?,ok,True,True,"SELECT regiao, COUNT(*) AS quantidade
+FROM estados
+GROUP BY regiao;","SELECT regiao, COUNT(*) FROM estados GROUP BY regiao",,1,652,244
+q13,facil,Quantos clientes se cadastraram em 2024?,ok,True,True,"SELECT COUNT(*) FROM clientes WHERE strftime('%Y', data_cadastro) = '2024'","SELECT COUNT(*) FROM clientes WHERE strftime('%Y', data_cadastro) = '2024'",,1,660,274
+q14,facil,Qual é a data do pedido mais recente?,ok,True,True,SELECT data_pedido FROM pedidos ORDER BY data_pedido DESC LIMIT 1,SELECT MAX(data_pedido) FROM pedidos,,1,651,230
+q15,facil,Quantos pedidos estão com status enviado?,ok,True,True,SELECT COUNT(*) FROM pedidos WHERE status = 'enviado';,SELECT COUNT(*) FROM pedidos WHERE status = 'enviado',,1,648,200
+q16,facil,"Quais são as categorias de produtos, sem repetição?",ok,True,True,SELECT DISTINCT categoria FROM produtos,SELECT DISTINCT categoria FROM produtos,,1,645,130
+q17,facil,Qual é o preço atual do produto Cafeteira?,ok,True,True,SELECT preco FROM produtos WHERE nome = 'Cafeteira';,SELECT preco FROM produtos WHERE nome = 'Cafeteira',,1,650,184
+q18,facil,"Quantas unidades foram vendidas no total, somando todos os pedidos, inclusive os cancelados?",ok,True,True,"SELECT SUM(itens_pedido.quantidade) AS total_unidades_vendidas
+FROM itens_pedido;",SELECT SUM(quantidade) FROM itens_pedido,,1,667,248
+q19,media,Quantos clientes há em cada região do país?,ok,False,False,"SELECT regiao, COUNT(*) AS quantidade
+FROM estados
+GROUP BY regiao;","SELECT e.regiao, COUNT(*) FROM clientes c JOIN estados e ON e.sigla = c.uf GROUP BY e.regiao",,2,1347,488
+q20,media,"Quais são os 4 produtos mais vendidos em quantidade, considerando apenas pedidos não cancelados?",ok,False,True,"SELECT p.nome, SUM(ip.quantidade) AS total_vendido
+FROM produtos p
+JOIN itens_pedido ip ON p.id = ip.produto_id
+JOIN pedidos pe ON ip.pedido_id = pe.id
+WHERE pe.status != 'cancelado'
+GROUP BY p.id
+ORDER BY total_vendido DESC
+LIMIT 4;",SELECT pr.nome FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id JOIN produtos pr ON pr.id = i.produto_id WHERE p.status <> 'cancelado' GROUP BY pr.id ORDER BY SUM(i.quantidade) DESC LIMIT 4,,1,718,763
+q21,media,Qual é o faturamento total da loja?,ok,True,True,"SELECT SUM(itens_pedido.quantidade * itens_pedido.preco_unitario) AS faturamento_total
+FROM pedidos
+JOIN itens_pedido ON pedidos.id = itens_pedido.pedido_id
+WHERE pedidos.status != 'cancelado';",SELECT SUM(i.quantidade * i.preco_unitario) FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id WHERE p.status <> 'cancelado',,1,685,538
+q22,media,Qual é o faturamento de cada categoria de produto?,ambigua,False,False,"SELECT p.categoria, SUM(i.quantidade * i.preco_unitario) AS faturamento
+FROM produtos p
+JOIN itens_pedido i ON p.id = i.produto_id
+WHERE p.status = 'entregue'
+GROUP BY p.categoria;","SELECT pr.categoria, SUM(i.quantidade * i.preco_unitario) FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id JOIN produtos pr ON pr.id = i.produto_id WHERE p.status <> 'cancelado' GROUP BY pr.categoria",Qual é o faturamento de cada categoria de produto?,2,1418,805
+q23,media,Quantos pedidos existem em cada status?,ok,True,True,"SELECT status, COUNT(*) AS quantidade FROM pedidos GROUP BY status;","SELECT status, COUNT(*) FROM pedidos GROUP BY status",,1,650,217
+q24,media,Qual é a sigla do estado com mais clientes?,ok,True,True,"SELECT e.sigla
+FROM estados e
+JOIN clientes c ON e.sigla = c.uf
+GROUP BY e.sigla
+ORDER BY COUNT(c.id) DESC
+LIMIT 1;",SELECT uf FROM clientes GROUP BY uf ORDER BY COUNT(*) DESC LIMIT 1,,1,675,421
+q25,media,Qual é o valor médio de um pedido não cancelado?,ok,False,False,"SELECT AVG(itens_pedido.quantidade * itens_pedido.preco_unitario) AS media_valor_pedido
+FROM pedidos
+JOIN itens_pedido ON pedidos.id = itens_pedido.pedido_id
+WHERE pedidos.status != 'cancelado';",SELECT AVG(total) FROM (SELECT SUM(i.quantidade * i.preco_unitario) AS total FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id WHERE p.status <> 'cancelado' GROUP BY p.id),,1,686,503
+q26,media,Quais são os ids dos clientes que fizeram mais de 12 pedidos?,ok,True,True,"SELECT cliente_id
+FROM pedidos
+GROUP BY cliente_id
+HAVING COUNT(*) > 12;",SELECT cliente_id FROM pedidos GROUP BY cliente_id HAVING COUNT(*) > 12,,1,667,273
+q27,media,Quantos clientes nunca fizeram nenhum pedido?,ok,True,True,SELECT COUNT(*) FROM clientes WHERE id NOT IN (SELECT cliente_id FROM pedidos),SELECT COUNT(*) FROM clientes WHERE id NOT IN (SELECT cliente_id FROM pedidos),,1,654,238
+q28,media,"Qual foi o faturamento de cada mês de 2025, com o mês no formato AAAA-MM?",ok,True,True,"SELECT strftime('%Y-%m', data_pedido) AS mes, SUM(itens_pedido.quantidade * itens_pedido.preco_unitario) AS faturamento
+FROM pedidos
+JOIN itens_pedido ON pedidos.id = itens_pedido.pedido_id
+WHERE strftime('%Y', data_pedido) = '2025'
+  AND pedidos.status != 'cancelado'
+GROUP BY mes
+ORDER BY mes;","SELECT strftime('%Y-%m', p.data_pedido), SUM(i.quantidade * i.preco_unitario) FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id WHERE p.status <> 'cancelado' AND strftime('%Y', p.data_pedido) = '2025' GROUP BY 1",,1,736,918
+q29,media,"Quantos pedidos foram feitos por clientes da região Nordeste, contando todos os status?",ok,True,True,"SELECT COUNT(*) AS total_pedidos
+FROM clientes
+JOIN pedidos ON clientes.id = pedidos.cliente_id
+WHERE clientes.uf IN (
+    SELECT sigla
+    FROM estados
+    WHERE regiao = 'Nordeste'
+);",SELECT COUNT(*) FROM pedidos p JOIN clientes c ON c.id = p.cliente_id JOIN estados e ON e.sigla = c.uf WHERE e.regiao = 'Nordeste',,1,696,591
+q30,media,"Qual categoria vendeu mais unidades em 2024, considerando apenas pedidos não cancelados?",ok,False,True,"SELECT p.categoria, SUM(ip.quantidade) AS total_vendido
+FROM produtos p
+JOIN itens_pedido ip ON p.id = ip.produto_id
+JOIN pedidos pe ON ip.pedido_id = pe.id
+WHERE strftime('%Y', pe.data_pedido) = '2024' AND pe.status != 'cancelado'
+GROUP BY p.categoria
+ORDER BY total_vendido DESC
+LIMIT 1;","SELECT pr.categoria FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id JOIN produtos pr ON pr.id = i.produto_id WHERE p.status <> 'cancelado' AND strftime('%Y', p.data_pedido) = '2024' GROUP BY pr.categoria ORDER BY SUM(i.quantidade) DESC LIMIT 1",,1,737,927
+q31,media,Quantos pedidos foram cancelados em cada ano?,ok,True,True,"SELECT strftime('%Y', data_pedido) AS ano, COUNT(*) AS quantidade_cancelados
+FROM pedidos
+WHERE status = 'cancelado'
+GROUP BY ano;","SELECT strftime('%Y', data_pedido), COUNT(*) FROM pedidos WHERE status = 'cancelado' GROUP BY 1",,1,670,372
+q32,media,Quantos produtos diferentes já apareceram em pedidos entregues?,ok,True,True,SELECT COUNT(DISTINCT produto_id) FROM itens_pedido WHERE pedido_id IN (SELECT id FROM pedidos WHERE status = 'entregue'),SELECT COUNT(DISTINCT i.produto_id) FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id WHERE p.status = 'entregue',,1,669,337
+q33,media,"Em média, quantos produtos diferentes há em cada pedido?",ambigua,False,False,"SELECT AVG(COUNT(DISTINCT produto_id)) AS media_produtos_diferentes
+FROM pedidos;",SELECT AVG(n) FROM (SELECT COUNT(*) AS n FROM itens_pedido GROUP BY pedido_id),Quais são os critérios para calcular a média de produtos diferentes em cada pedido?,2,1365,555
+q34,media,Em quantos itens vendidos o preço pago foi menor que o preço atual do produto?,ok,False,False,SELECT COUNT(*) FROM itens_pedido WHERE preco_unitario < (SELECT preco FROM produtos),SELECT COUNT(*) FROM itens_pedido i JOIN produtos pr ON pr.id = i.produto_id WHERE i.preco_unitario < pr.preco,,1,661,245
+q35,media,Qual é o faturamento com clientes do Rio Grande do Sul?,ok,True,True,"SELECT SUM(itens_pedido.quantidade * itens_pedido.preco_unitario) AS faturamento
+FROM clientes
+JOIN pedidos ON clientes.id = pedidos.cliente_id
+JOIN itens_pedido ON pedidos.id = itens_pedido.pedido_id
+JOIN estados ON clientes.uf = estados.sigla
+WHERE estados.nome = 'Rio Grande do Sul' AND pedidos.status != 'cancelado';",SELECT SUM(i.quantidade * i.preco_unitario) FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id JOIN clientes c ON c.id = p.cliente_id WHERE p.status <> 'cancelado' AND c.uf = 'RS',,1,719,839
+q36,media,Quantos clientes há em cada estado da região Sudeste?,ok,True,True,"SELECT e.sigla, COUNT(c.id) AS quantidade
+FROM estados e
+JOIN clientes c ON e.sigla = c.uf
+WHERE e.regiao = 'Sudeste'
+GROUP BY e.sigla;","SELECT c.uf, COUNT(*) FROM clientes c JOIN estados e ON e.sigla = c.uf WHERE e.regiao = 'Sudeste' GROUP BY c.uf",,1,682,476
+q37,media,Qual foi a receita dos pedidos com status entregue feitos em dezembro de 2025?,ok,True,True,"SELECT SUM(itens_pedido.quantidade * itens_pedido.preco_unitario) AS receita
+FROM pedidos
+JOIN itens_pedido ON pedidos.id = itens_pedido.pedido_id
+JOIN produtos ON itens_pedido.produto_id = produtos.id
+WHERE pedidos.status = 'entregue'
+  AND strftime('%Y-%m', pedidos.data_pedido) = '2025-12';","SELECT SUM(i.quantidade * i.preco_unitario) FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id WHERE p.status = 'entregue' AND strftime('%Y-%m', p.data_pedido) = '2025-12'",,1,732,871
+q38,media,Qual é o produto mais caro de cada categoria?,ok,False,True,"SELECT p.nome, p.categoria, MAX(p.preco) AS preco_maximo
+FROM produtos p
+GROUP BY p.categoria;","SELECT categoria, nome FROM produtos p WHERE preco = (SELECT MAX(preco) FROM produtos WHERE categoria = p.categoria)",,1,665,344
+q39,dificil,Quais são os ids dos 3 clientes que mais gastaram em pedidos não cancelados?,ok,True,True,"SELECT cliente_id
+FROM pedidos
+JOIN itens_pedido ON pedidos.id = itens_pedido.pedido_id
+WHERE pedidos.status != 'cancelado'
+GROUP BY cliente_id
+ORDER BY SUM(itens_pedido.quantidade * itens_pedido.preco_unitario) DESC
+LIMIT 3;",SELECT p.cliente_id FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id WHERE p.status <> 'cancelado' GROUP BY p.cliente_id ORDER BY SUM(i.quantidade * i.preco_unitario) DESC LIMIT 3,,2,1460,1101
+q40,dificil,Qual região teve o maior faturamento em 2025?,ok,False,True,"SELECT e.regiao, SUM(i.quantidade * i.preco_unitario) AS faturamento
+FROM estados e
+JOIN clientes c ON e.sigla = c.uf
+JOIN pedidos p ON c.id = p.cliente_id
+JOIN itens_pedido i ON p.id = i.pedido_id
+WHERE strftime('%Y', p.data_pedido) = '2025'
+GROUP BY e.regiao
+ORDER BY faturamento DESC
+LIMIT 1;","SELECT e.regiao FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id JOIN clientes c ON c.id = p.cliente_id JOIN estados e ON e.sigla = c.uf WHERE p.status <> 'cancelado' AND strftime('%Y', p.data_pedido) = '2025' GROUP BY e.regiao ORDER BY SUM(i.quantidade * i.preco_unitario) DESC LIMIT 1",,1,737,928
+q41,dificil,Qual é o percentual de pedidos cancelados em relação ao total de pedidos?,ok,True,True,"SELECT CAST(SUM(CASE WHEN status = 'cancelado' THEN 1 ELSE 0 END) AS REAL) * 100 / COUNT(*) AS percentual_cancelados
+FROM pedidos;",SELECT 100.0 * SUM(status = 'cancelado') / COUNT(*) FROM pedidos,,1,686,446
+q42,dificil,Qual foi o faturamento total de cada ano?,ok,True,True,"SELECT strftime('%Y', data_pedido) AS ano, SUM(itens_pedido.quantidade * itens_pedido.preco_unitario) AS faturamento
+FROM pedidos
+JOIN itens_pedido ON pedidos.id = itens_pedido.pedido_id
+WHERE pedidos.status != 'cancelado'
+GROUP BY ano
+ORDER BY ano;","SELECT strftime('%Y', p.data_pedido), SUM(i.quantidade * i.preco_unitario) FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id WHERE p.status <> 'cancelado' GROUP BY 1",,1,702,674
+q43,dificil,Quantos clientes fizeram pedidos tanto em 2024 quanto em 2025?,ok,False,False,"SELECT COUNT(DISTINCT cliente_id) AS clientes_2024_2025
+FROM pedidos
+WHERE strftime('%Y', data_pedido) IN ('2024', '2025');","SELECT COUNT(*) FROM (SELECT cliente_id FROM pedidos WHERE strftime('%Y', data_pedido) = '2024' INTERSECT SELECT cliente_id FROM pedidos WHERE strftime('%Y', data_pedido) = '2025')",,1,695,557
+q44,dificil,"Em qual mês de 2025, no formato AAAA-MM, houve mais pedidos?",ok,False,True,"SELECT strftime('%Y-%m', data_pedido) AS mes, COUNT(*) AS total_pedidos
+FROM pedidos
+WHERE strftime('%Y', data_pedido) = '2025'
+GROUP BY mes
+ORDER BY total_pedidos DESC
+LIMIT 1;","SELECT strftime('%Y-%m', data_pedido) FROM pedidos WHERE strftime('%Y', data_pedido) = '2025' GROUP BY 1 ORDER BY COUNT(*) DESC LIMIT 1",,1,703,559
+q45,dificil,Qual foi o crescimento percentual do faturamento de 2025 em relação a 2024?,ambigua,False,False,"SELECT 
+    (SUM(CASE WHEN strftime('%Y', data_pedido) = '2025' THEN valor_pedido ELSE 0 END) - 
+     SUM(CASE WHEN strftime('%Y', data_pedido) = '2024' THEN valor_pedido ELSE 0 END)) * 100 / 
+    SUM(CASE WHEN strftime('%Y', data_pedido) = '2024' THEN valor_pedido ELSE 0 END) AS crescimento_percentual
+FROM (
+    SELECT 
+        p.id AS pedido_id,
+        SUM(ip.quantidade * ip.preco_unitario) AS valor_pedido
+    FROM 
+        pedidos p
+    JOIN 
+        itens_pedido ip ON p.id = ip.pedido_id
+    WHERE 
+        p.status != 'cancelado'
+    GROUP BY 
+        p.id
+);","SELECT 100.0 * (SUM(CASE WHEN strftime('%Y', p.data_pedido) = '2025' THEN i.quantidade * i.preco_unitario END) - SUM(CASE WHEN strftime('%Y', p.data_pedido) = '2024' THEN i.quantidade * i.preco_unitario END)) / SUM(CASE WHEN strftime('%Y', p.data_pedido) = '2024' THEN i.quantidade * i.preco_unitario END) FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id WHERE p.status <> 'cancelado'",Qual é o crescimento percentual do faturamento de 2025 em relação a 2024?,2,1696,1996
+q46,dificil,"Quais estados, pela sigla, têm menos de 4 clientes?",erro,False,False,"SELECT sigla FROM estados WHERE id IN (
+    SELECT cliente_id FROM clientes GROUP BY cliente_id HAVING COUNT(*) < 4
+)",SELECT e.sigla FROM estados e LEFT JOIN clientes c ON c.uf = e.sigla GROUP BY e.sigla HAVING COUNT(c.id) < 4,Erro ao executar a consulta: no such column: cliente_id,2,1390,652
+q47,dificil,"Quanto cada cliente que comprou gastou, em média, considerando só pedidos não cancelados?",ok,False,False,"SELECT c.nome, AVG(ip.quantidade * ip.preco_unitario) AS media_gasto
+FROM clientes c
+JOIN pedidos p ON c.id = p.cliente_id
+JOIN itens_pedido ip ON p.id = ip.pedido_id
+WHERE p.status != 'cancelado'
+GROUP BY c.nome;",SELECT AVG(total) FROM (SELECT SUM(i.quantidade * i.preco_unitario) AS total FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id WHERE p.status <> 'cancelado' GROUP BY p.cliente_id),,1,712,674
+q48,dificil,Qual categoria tem o maior faturamento em cada região?,erro,False,False,"WITH faturamento_por_regiao AS (
+    SELECT 
+        e.regiao,
+        p.categoria,
+        SUM(i.quantidade * i.preco_unitario) AS total_faturamento
+    FROM 
+        pedidos p
+    JOIN 
+        itens_pedido i ON p.id = i.pedido_id
+    JOIN 
+        produtos prod ON i.produto_id = prod.id
+    JOIN 
+        clientes c ON p.cliente_id = c.id
+    JOIN 
+        estados e ON c.uf = e.sigla
+    WHERE 
+        p.status != 'cancelado'
+    GROUP BY 
+        e.regiao, p.categoria
+),
+categoria_maior_faturamento AS (
+    SELECT 
+        regiao,
+        categoria,
+        total_faturamento,
+        ROW_NUMBER() OVER (PARTITION BY regiao ORDER BY total_faturamento DESC) AS rn
+    FROM 
+        faturamento_por_regiao
+)
+SELECT 
+    regiao,
+    categoria
+FROM 
+    categoria_maior_faturamento
+WHERE 
+    rn = 1;","SELECT regiao, categoria FROM (SELECT e.regiao, pr.categoria, ROW_NUMBER() OVER (PARTITION BY e.regiao ORDER BY SUM(i.quantidade * i.preco_unitario) DESC) AS pos FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id JOIN produtos pr ON pr.id = i.produto_id JOIN clientes c ON c.id = p.cliente_id JOIN estados e ON e.sigla = c.uf WHERE p.status <> 'cancelado' GROUP BY e.regiao, pr.categoria) WHERE pos = 1",Erro ao executar a consulta: no such column: p.categoria,2,1961,4118
+q49,dificil,Que percentual do faturamento total vem da categoria Eletrônicos?,ok,False,False,"SELECT CAST(SUM(CASE WHEN p.categoria = 'Eletrônicos' THEN i.quantidade * i.preco_unitario ELSE 0 END) AS REAL) * 100 / SUM(i.quantidade * i.preco_unitario) AS percentual_eletronicos
+FROM itens_pedido i
+JOIN produtos p ON i.produto_id = p.id
+WHERE p.categoria = 'Eletrônicos';",SELECT 100.0 * SUM(CASE WHEN pr.categoria = 'Eletrônicos' THEN i.quantidade * i.preco_unitario ELSE 0 END) / SUM(i.quantidade * i.preco_unitario) FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id JOIN produtos pr ON pr.id = i.produto_id WHERE p.status <> 'cancelado',,1,730,841
+q50,dificil,Quantos pedidos não cancelados tiveram valor total acima de 1000 reais?,erro,False,False,"SELECT COUNT(*) 
+FROM pedidos 
+WHERE status != 'cancelado' 
+  AND SUM(itens_pedido.quantidade * itens_pedido.preco_unitario) > 1000;",SELECT COUNT(*) FROM (SELECT p.id FROM itens_pedido i JOIN pedidos p ON p.id = i.pedido_id WHERE p.status <> 'cancelado' GROUP BY p.id HAVING SUM(i.quantidade * i.preco_unitario) > 1000),Erro ao executar a consulta: no such column: itens_pedido.quantidade,2,1441,922
