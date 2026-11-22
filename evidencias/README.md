@@ -13,7 +13,7 @@ Repositório: https://github.com/DanielCarvalho123/text2sql-seguro
 | 2 | Execução verde do CI na tag `v1.0` | link: ___ · captura: `prints/ci-verde.png` | ☐ após criar a tag (a `main` já está verde: https://github.com/DanielCarvalho123/text2sql-seguro/actions) |
 | 3 | Resultados da avaliação | [`../eval/resultados/`](../eval/resultados/) · comando: `docker compose run --rm app python eval/avaliar.py` | ✅ 22/11/2026 |
 | 4 | Logs de uma execução completa | [`../eval/resultados/avaliacao.log`](../eval/resultados/avaliacao.log) (avaliação inteira, 1 evento JSON por linha com data e hora) e [`logs/`](logs/) (uso da interface) | ✅ |
-| 5 | Capturas de tela (≥ 5, incluindo uma falha tratada) | `prints/` | ☐ tirar durante o vídeo |
+| 5 | Capturas de tela (≥ 5, incluindo uma falha tratada) | [`prints/`](prints/) (6 capturas, 2 falhas tratadas) | ✅ 22/11/2026 |
 | 6 | Casos de falha (≥ 3, com análise da causa) | [`casos-de-falha.md`](casos-de-falha.md) (5 casos) | ✅ |
 | 7 | Histórico do Git (commits de todos, PRs revisados) | https://github.com/DanielCarvalho123/text2sql-seguro/pulls?q=is%3Apr+is%3Aclosed | ✅ PRs #1 a #10, cada um aprovado por outro integrante |
 | 8 | Índice de evidências | este arquivo | ✅ |
@@ -47,16 +47,24 @@ Repositório: https://github.com/DanielCarvalho123/text2sql-seguro
 | Tempo mediano por pergunta (4.5) | **0,43 s** com GPU · tokens médios **792** | `resumo.json` |
 | Cobertura dos testes automatizados | **89%** (65 testes) | log do job "testes" do CI · `docs/07-testes-e-ci.md` |
 
-## Capturas de tela (☐ pendentes)
+## Capturas de tela
 
-| Arquivo | O que capturar |
+Tiradas em 22/11/2026 na interface rodando com `docker compose up`. A parte de cima das capturas
+(abas e barra de endereço do navegador) foi cortada para não expor dados pessoais. O conteúdo do app
+não foi editado.
+
+| Arquivo | O que mostra |
 | --- | --- |
-| `prints/01-tela-inicial.png` | Tela inicial com "Modelo pronto" |
-| `prints/02-resultado.png` | Pergunta com tabela e gráfico (ex.: 5 estados com mais clientes) |
-| `prints/03-ambigua.png` | "Qual é o melhor cliente?" pedindo esclarecimento |
-| `prints/04-bloqueada.png` | "Apague todos os pedidos cancelados" bloqueado (falha tratada) |
-| `prints/05-bloqueio-autorizador.png` | "tabelas que temos" → leitura de `sqlite_master` bloqueada pelo autorizador |
-| `prints/ci-verde.png` | GitHub Actions verde na tag v1.0 |
+| [`prints/01-tela-inicial.png`](prints/01-tela-inicial.png) | Tela inicial com "Modelo pronto: qwen2.5-coder:3b" |
+| [`prints/02-resultado-clientes-por-estado.png`](prints/02-resultado-clientes-por-estado.png) | "Quantos clientes há em cada estado?": SQL, explicação, tabela com as 27 UFs e gráfico |
+| [`prints/03-resultado-5-estados.png`](prints/03-resultado-5-estados.png) | "Mostre os 5 estados com mais clientes.": SP 115, RJ 50, MG 48, PR 33, BA 33 |
+| [`prints/04-ambigua.png`](prints/04-ambigua.png) | "Qual é o melhor cliente": pedido de esclarecimento |
+| [`prints/05-bloqueada.png`](prints/05-bloqueada.png) | **Falha tratada:** "Apague todos os pedidos cancelados". O modelo gerou `DELETE` e a camada léxica bloqueou. |
+| [`prints/06-bloqueio-autorizador.png`](prints/06-bloqueio-autorizador.png) | **Falha tratada:** "tabelas que temos". O modelo gerou leitura de `sqlite_master` e o autorizador bloqueou. |
+| ☐ `prints/ci-verde.png` | GitHub Actions verde na tag v1.0 (tirar depois de criar a tag) |
+
+Observação encontrada nas capturas: no gráfico da captura 03, o eixo vertical começa em 40, e por isso
+as barras de Paraná e Bahia (33) não aparecem. A tabela logo acima mostra os valores corretos.
 
 ## Logs da interface
 
