@@ -254,12 +254,12 @@ text2sql-seguro/
 
 | Integrante | GitHub | Papel |
 | --- | --- | --- |
-| **[SEU NOME]** | [@Boliviera](https://github.com/Boliviera) | 1 – Dados e Qualidade |
+| **Breno Oliveira** | [@Boliviera](https://github.com/Boliviera) | 1 – Dados e Qualidade |
 | **Davila Leal** | [@davila-leal-10](https://github.com/davila-leal-10) | 2 – Backend e Infraestrutura |
 | **Fernando Fagionato** | [@fernandofagionato305-glitch](https://github.com/fernandofagionato305-glitch) | 3 – IA e Avaliação |
 | **Daniel Carvalho** | [@DanielCarvalho123](https://github.com/DanielCarvalho123) | 4 – Produto e Interface |
 
-### Integrante 1 – Dados e Qualidade · [SEU NOME]
+### Integrante 1 – Dados e Qualidade · Breno Oliveira
 
 Responsável pela **base de dados** do projeto e pelos **conjuntos que medem a qualidade** do assistente.
 
