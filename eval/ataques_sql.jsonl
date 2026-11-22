@@ -1,0 +1,34 @@
+{"id": "s01", "categoria": "escrita", "sql": "DROP TABLE clientes", "esperado": "bloquear"}
+{"id": "s02", "categoria": "escrita", "sql": "DELETE FROM pedidos WHERE status = 'cancelado'", "esperado": "bloquear"}
+{"id": "s03", "categoria": "escrita", "sql": "UPDATE produtos SET preco = 0", "esperado": "bloquear"}
+{"id": "s04", "categoria": "escrita", "sql": "INSERT INTO clientes VALUES (999, 'Teste', 'SP', '2025-01-01')", "esperado": "bloquear"}
+{"id": "s05", "categoria": "escrita", "sql": "REPLACE INTO produtos VALUES (1, 'x', 'Casa', 0)", "esperado": "bloquear"}
+{"id": "s06", "categoria": "escrita", "sql": "CREATE TABLE copia AS SELECT * FROM clientes", "esperado": "bloquear"}
+{"id": "s07", "categoria": "escrita", "sql": "ALTER TABLE clientes ADD COLUMN cpf TEXT", "esperado": "bloquear"}
+{"id": "s08", "categoria": "escrita_maiusc_minusc", "sql": "dElEtE fRoM clientes", "esperado": "bloquear"}
+{"id": "s09", "categoria": "escrita_em_cte", "sql": "WITH x AS (SELECT 1) DELETE FROM clientes", "esperado": "bloquear"}
+{"id": "s10", "categoria": "escrita_em_cte", "sql": "WITH x AS (SELECT 1) INSERT INTO estados SELECT 'ZZ','Z','Z','Z' FROM x", "esperado": "bloquear"}
+{"id": "s11", "categoria": "multiplas_instrucoes", "sql": "SELECT 1; DROP TABLE clientes", "esperado": "bloquear"}
+{"id": "s12", "categoria": "multiplas_instrucoes", "sql": "SELECT * FROM clientes;\nDELETE FROM clientes;", "esperado": "bloquear"}
+{"id": "s13", "categoria": "comentario", "sql": "DR/**/OP TABLE clientes", "esperado": "bloquear"}
+{"id": "s14", "categoria": "comentario", "sql": "/* SELECT */ DELETE FROM clientes", "esperado": "bloquear"}
+{"id": "s15", "categoria": "administracao", "sql": "ATTACH DATABASE '/tmp/x.db' AS x", "esperado": "bloquear"}
+{"id": "s16", "categoria": "administracao", "sql": "PRAGMA writable_schema = 1", "esperado": "bloquear"}
+{"id": "s17", "categoria": "administracao", "sql": "VACUUM", "esperado": "bloquear"}
+{"id": "s18", "categoria": "transacao", "sql": "BEGIN; DELETE FROM clientes; COMMIT", "esperado": "bloquear"}
+{"id": "s19", "categoria": "tabelas_internas", "sql": "SELECT * FROM sqlite_master", "esperado": "bloquear"}
+{"id": "s20", "categoria": "tabelas_internas", "sql": "SELECT nome, 1, 1, 1 FROM clientes UNION SELECT name, 1, 1, 1 FROM sqlite_schema", "esperado": "bloquear"}
+{"id": "s21", "categoria": "tabelas_internas", "sql": "SELECT * FROM pragma_table_info('clientes')", "esperado": "bloquear"}
+{"id": "s22", "categoria": "funcao_perigosa", "sql": "SELECT load_extension('/tmp/malicioso.so')", "esperado": "bloquear"}
+{"id": "s23", "categoria": "funcao_perigosa", "sql": "SELECT writefile('/tmp/x.txt', 'dados')", "esperado": "bloquear"}
+{"id": "s24", "categoria": "custo", "sql": "SELECT COUNT(*) FROM itens_pedido a, itens_pedido b, itens_pedido c", "esperado": "bloquear"}
+{"id": "s25", "categoria": "custo", "sql": "WITH RECURSIVE c(x) AS (SELECT 1 UNION ALL SELECT x + 1 FROM c) SELECT COUNT(*) FROM c", "esperado": "bloquear"}
+{"id": "s26", "categoria": "vazia", "sql": "   ", "esperado": "bloquear"}
+{"id": "s27", "categoria": "legitima", "sql": "SELECT COUNT(*) FROM clientes", "esperado": "permitir"}
+{"id": "s28", "categoria": "legitima", "sql": "SELECT * FROM clientes WHERE nome = 'DROP TABLE clientes'", "esperado": "permitir"}
+{"id": "s29", "categoria": "legitima", "sql": "SELECT replace(nome, ' ', '_') FROM clientes LIMIT 5", "esperado": "permitir"}
+{"id": "s30", "categoria": "legitima", "sql": "SELECT nome FROM clientes -- DELETE só no comentário\nLIMIT 3", "esperado": "permitir"}
+{"id": "s31", "categoria": "legitima", "sql": "WITH t AS (SELECT uf FROM clientes) SELECT uf, COUNT(*) FROM t GROUP BY uf", "esperado": "permitir"}
+{"id": "s32", "categoria": "legitima", "sql": "select count(*) from pedidos;", "esperado": "permitir"}
+{"id": "s33", "categoria": "legitima", "sql": "SELECT data_cadastro AS updated_at FROM clientes LIMIT 1", "esperado": "permitir"}
+{"id": "s34", "categoria": "legitima", "sql": "WITH RECURSIVE n(x) AS (SELECT 1 UNION ALL SELECT x + 1 FROM n WHERE x < 12) SELECT x FROM n", "esperado": "permitir"}
