@@ -9,7 +9,7 @@ Repositório: https://github.com/DanielCarvalho123/text2sql-seguro
 
 | # | Evidência | Arquivo / link | Status |
 | --- | --- | --- | --- |
-| 1 | Vídeo (3 a 5 min, tela inteira, `docker compose up` do zero + fluxo principal) | `videos/demo.mp4` ou link: ___ | ☐ gravar |
+| 1 | Vídeo (3 a 5 min, tela inteira, `docker compose up` do zero + fluxo principal) | `videos/demo.mp4` ou link: ___ · complementar: [`videos/teste-funcionalidades.mp4`](videos/teste-funcionalidades.mp4) (2,7 min, só a interface) | ☐ gravar o vídeo completo |
 | 2 | Execução verde do CI na tag `v1.0` | link: ___ · captura: `prints/ci-verde.png` | ☐ após criar a tag (a `main` já está verde: https://github.com/DanielCarvalho123/text2sql-seguro/actions) |
 | 3 | Resultados da avaliação | [`../eval/resultados/`](../eval/resultados/) · comando: `docker compose run --rm app python eval/avaliar.py` | ✅ 22/11/2026 |
 | 4 | Logs de uma execução completa | [`../eval/resultados/avaliacao.log`](../eval/resultados/avaliacao.log) (avaliação inteira, 1 evento JSON por linha com data e hora) e [`logs/`](logs/) (uso da interface) | ✅ |
