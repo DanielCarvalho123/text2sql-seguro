@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches: [main]
+    tags: ["v*"]
   pull_request:
 
 jobs:
@@ -19,4 +20,19 @@ jobs:
       - name: Lint (ruff)
         run: ruff check .
       - name: Testes com cobertura
-        run: pytest --cov --cov-report=term-missing
+        run: pytest --cov --cov-report=term-missing --cov-report=xml
+      - name: Validador contra o catálogo de ataques (sem modelo)
+        run: python eval/avaliar.py --somente-ataques-sql
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-e-ataques
+          path: |
+            coverage.xml
+            eval/resultados/ataques_sql.csv
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build da imagem
+        run: docker build -t text2sql-seguro .

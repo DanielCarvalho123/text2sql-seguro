@@ -1,0 +1,47 @@
+# Sobe o projeto inteiro com:  docker compose up
+# Na primeira execução o modelo (cerca de 2 GB) é baixado; nas próximas, não.
+services:
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    # Para usar GPU NVIDIA, descomente:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices: [{ driver: nvidia, count: all, capabilities: [gpu] }]
+
+  baixar-modelo:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["ollama", "pull", "${MODELO:-qwen2.5-coder:3b}"]
+    restart: "no"
+
+  app:
+    build: .
+    depends_on:
+      baixar-modelo:
+        condition: service_completed_successfully
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      MODELO: ${MODELO:-qwen2.5-coder:3b}
+      LIMITE_LINHAS: ${LIMITE_LINHAS:-1000}
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./logs:/app/logs
+      - ./eval/resultados:/app/eval/resultados
+
+volumes:
+  ollama:
