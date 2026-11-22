@@ -161,3 +161,17 @@ interações que não aconteceram.
   vídeo, pesquisa ABNT e tag `v1.0`. Rodou a avaliação e preencheu as evidências **só com números
   gerados pelo sistema**.
 - **Decisão:** _(o grupo completa depois de revisar o PR das evidências)_
+
+## 15. Avaliação da amostra de explicações
+
+- **Ferramenta:** Claude
+- **Prompt (resumo):** pedimos para preencher as notas da amostra de explicações exigida no enunciado
+  ("explicação … avaliada em amostra").
+- **Resposta (resumo):** a IA não preencheu as colunas de nota humana (`nota_avaliador_1/2`), porque
+  isso atribuiria ao grupo uma avaliação que não fizemos. Propôs avaliar a amostra ela mesma, com o
+  critério de 1 a 5 da ficha, identificando a avaliação como feita por IA. Também mediu de forma
+  automática o uso de termos técnicos. Resultado: média 3,6; 2 de 15 abaixo de 3; 3 de 15 com palavras
+  proibidas pela instrução (SELECT, JOIN, GROUP BY, WHERE). Arquivo: `eval/resultados/explicacoes_avaliadas_ia.csv`.
+- **Decisão:** aceito, com a ressalva registrada na pesquisa (seções 4.4 e 5.1) de que a avaliação não
+  é humana. As colunas de nota humana continuam vazias no CSV original.
+

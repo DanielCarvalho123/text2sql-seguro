@@ -43,8 +43,8 @@ Repositório: https://github.com/DanielCarvalho123/text2sql-seguro
 | O sistema pediu esclarecimento nas perguntas ambíguas (4.3) | **2/10** (limitação, ver caso 4) | `ambiguas_completo.csv` |
 | Pedidos de esclarecimento desnecessários (4.3) | **2/50** completo · **20/50** sem esquema | `resumo.json` |
 | A nova tentativa corrigiu erros (4.1) | 7 perguntas precisaram de 2 tentativas, **1** terminou correta | `resultados_completo.csv` (coluna `tentativas`) |
-| Problemas observados nas explicações (4.5) | Análise qualitativa: explicações que repetem a pergunta (q43) e usam termos técnicos. **Notas humanas não realizadas** (limitação, seção 5.1) | `eval/resultados/explicacoes_para_avaliar.csv` (15 explicações) |
-| Tempo mediano por pergunta (4.4) | **0,43 s** com GPU · tokens médios **792** | `resumo.json` |
+| Qualidade das explicações (4.4) | Nota média **3,6** (1 a 5, mediana 4); **2/15** abaixo de 3; **3/15** usam palavras proibidas pela instrução e **8/15** algum termo técnico. **Avaliação feita por IA (Claude), não por humanos** (limitação, seção 5.1) | `eval/resultados/explicacoes_avaliadas_ia.csv` (amostra de 15 de `explicacoes_para_avaliar.csv`) |
+| Tempo mediano por pergunta (4.5) | **0,43 s** com GPU · tokens médios **792** | `resumo.json` |
 | Cobertura dos testes automatizados | **89%** (65 testes) | log do job "testes" do CI · `docs/07-testes-e-ci.md` |
 
 ## Capturas de tela
