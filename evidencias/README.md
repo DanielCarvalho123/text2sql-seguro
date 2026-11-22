@@ -9,7 +9,7 @@ Repositório: https://github.com/DanielCarvalho123/text2sql-seguro
 
 | # | Evidência | Arquivo / link | Status |
 | --- | --- | --- | --- |
-| 1 | Vídeo (3 a 5 min, tela inteira, `docker compose up` do zero + fluxo principal) | `videos/demo.mp4` ou link: ___ | ☐ gravar |
+| 1 | Vídeo (3 a 5 min, tela inteira, `docker compose up` do zero + fluxo principal) | [`videos/demo.mp4`](videos/demo.mp4) (4 min 59 s, tela inteira; o IP público que aparecia no terminal foi borrado) · complementar: [`videos/teste-funcionalidades.mp4`](videos/teste-funcionalidades.mp4) | ✅ 22/11/2026 |
 | 2 | Execução verde do CI na tag `v1.0` | link: ___ · captura: `prints/ci-verde.png` | ☐ após criar a tag (a `main` já está verde: https://github.com/DanielCarvalho123/text2sql-seguro/actions) |
 | 3 | Resultados da avaliação | [`../eval/resultados/`](../eval/resultados/) · comando: `docker compose run --rm app python eval/avaliar.py` | ✅ 22/11/2026 |
 | 4 | Logs de uma execução completa | [`../eval/resultados/avaliacao.log`](../eval/resultados/avaliacao.log) (avaliação inteira, 1 evento JSON por linha com data e hora) e [`logs/`](logs/) (uso da interface) | ✅ |
@@ -43,7 +43,7 @@ Repositório: https://github.com/DanielCarvalho123/text2sql-seguro
 | O sistema pediu esclarecimento nas perguntas ambíguas (4.3) | **2/10** (limitação, ver caso 4) | `ambiguas_completo.csv` |
 | Pedidos de esclarecimento desnecessários (4.3) | **2/50** completo · **20/50** sem esquema | `resumo.json` |
 | A nova tentativa corrigiu erros (4.1) | 7 perguntas precisaram de 2 tentativas, **1** terminou correta | `resultados_completo.csv` (coluna `tentativas`) |
-| As explicações receberam nota média (4.4) | ___ (☐ o grupo dá as notas de 1 a 5) | `eval/resultados/explicacoes_para_avaliar.csv` (15 explicações) |
+| Qualidade das explicações (4.4) | Nota média **3,6** (1 a 5, mediana 4); **2/15** abaixo de 3; **3/15** usam palavras proibidas pela instrução e **8/15** algum termo técnico. **Avaliação feita por IA (Claude), não por humanos** (limitação, seção 5.1) | `eval/resultados/explicacoes_avaliadas_ia.csv` (amostra de 15 de `explicacoes_para_avaliar.csv`) |
 | Tempo mediano por pergunta (4.5) | **0,43 s** com GPU · tokens médios **792** | `resumo.json` |
 | Cobertura dos testes automatizados | **89%** (65 testes) | log do job "testes" do CI · `docs/07-testes-e-ci.md` |
 
