@@ -1,7 +1,5 @@
 # 9. Manual do usuário
 
-> Substituir os marcadores `![...]` pelas capturas reais tiradas da aplicação (pasta `evidencias/prints/`).
-
 ## 1. Abrir
 
 Rode `docker compose up` e acesse http://localhost:8501. Espere a barra lateral mostrar
@@ -11,9 +9,9 @@ Rode `docker compose up` e acesse http://localhost:8501. Espere a barra lateral 
 
 ## 2. Fazer uma pergunta
 
-Digite em português, por exemplo *"Quantos clientes há em cada região?"*, e clique em **Perguntar**.
+Digite em português, por exemplo *"Mostre os 5 estados com mais clientes."*, e clique em **Perguntar**.
 
-![Pergunta com resultado](../evidencias/prints/02-resultado.png)
+![Pergunta com resultado](../evidencias/prints/03-resultado-5-estados.png)
 
 A resposta mostra:
 - a **consulta SQL** gerada;
@@ -26,17 +24,23 @@ A resposta mostra:
 Para perguntas vagas, como *"Qual é o melhor cliente?"*, o assistente pergunta o critério. Reformule,
 por exemplo: *"Qual cliente mais gastou em pedidos não cancelados?"*.
 
-![Pedido de esclarecimento](../evidencias/prints/03-ambigua.png)
+![Pedido de esclarecimento](../evidencias/prints/04-ambigua.png)
 
 ## 4. Quando a consulta é bloqueada
 
-Pedidos para apagar ou alterar dados são recusados ou bloqueados, com o motivo.
+Pedidos para apagar ou alterar dados são recusados ou bloqueados, com o motivo e a camada que bloqueou
+(léxica, autorizador ou custo).
 
-![Consulta bloqueada](../evidencias/prints/04-bloqueada.png)
+![Consulta bloqueada](../evidencias/prints/05-bloqueada.png)
+
+Pedidos que tentam ler a estrutura interna do banco também são bloqueados, neste caso pelo autorizador:
+
+![Bloqueio pelo autorizador](../evidencias/prints/06-bloqueio-autorizador.png)
 
 ## 5. Dicas
 
 - Seja específico sobre período ("em 2025") e status ("pedidos não cancelados").
-- Confira o SQL e a explicação: o assistente pode errar.
+- Confira o SQL e a explicação: o assistente pode errar. Por exemplo, *"Quantos clientes temos em cada
+  região?"* costuma voltar a contagem de estados, e não de clientes (ver `evidencias/casos-de-falha.md`).
 - Abra **Esquema do banco** na barra lateral para ver as tabelas disponíveis.
 - Abra **Plano de execução** para ver como o banco executou a consulta.
